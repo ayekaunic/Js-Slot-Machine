@@ -17,10 +17,10 @@ const SYMBOL_VALUES = {
 
 const deposit = () => {
     while (true) {
-        const depositAmount = prompt('Enter a deposit amount: ');
+        const depositAmount = prompt('\nEnter a deposit amount: ');
         const numberDepositAmount = parseFloat(depositAmount);
         if (isNaN(numberDepositAmount) || numberDepositAmount <= 0) {
-            console.log('Invalid deposit amount, try again.');
+            console.log('\nInvalid deposit amount, try again.');
         } else {
             return numberDepositAmount;
         }
@@ -29,10 +29,10 @@ const deposit = () => {
 
 const getNumberOfLines = () => {
     while (true) {
-        const lines = prompt('Enter the number of lines to bet on (1-3): ');
+        const lines = prompt('\nEnter the number of lines to bet on (1-3): ');
         const numberOfLines = parseFloat(lines);
         if (isNaN(numberOfLines) || numberOfLines < 1 || numberOfLines > 3) {
-            console.log('Invalid number of lines, try again.');
+            console.log('\nInvalid number of lines, try again.');
         } else {
             return numberOfLines;
         }
@@ -41,10 +41,10 @@ const getNumberOfLines = () => {
 
 const getBet = (balance, lines) => {
     while (true) {
-        const bet = prompt('Enter the bet per line: ');
+        const bet = prompt('\nEnter the bet per line: ');
         const numberBet = parseFloat(bet);
         if (isNaN(numberBet) || numberBet < 1 || numberBet > balance / lines) {
-            console.log('Inalid bet, try again.');
+            console.log('\nInalid bet, try again.');
         } else {
             return numberBet;
         }
@@ -100,12 +100,51 @@ const printSlotMachine = (rows) => {
     }
 }
 
-// let balance = deposit();
-// const numberOfLines = getNumberOfLines();
-// const betAmount = getBet(balance, numberOfLines);
-reels = spin();
-rows = transpose(reels);
-// console.log(reels);
-// console.log(rows);
+const getWinnings = (rows, bet, lines) => {
+    let winnings = 0;
 
-printSlotMachine(rows);
+    for (let row = 0; row < lines; row++) {
+        const symbols = rows[row];
+        let allSame = true;
+        
+        for (const symbol of symbols) {
+            if (symbol != symbols[0]) {
+                allSame = false;
+                break;
+            }
+        }
+
+        if (allSame) {
+            winnings += bet * SYMBOL_VALUES[symbols[0]];
+        }
+    }
+
+    return winnings;
+}
+
+const game = () => {
+    let balance = deposit();
+    while (true) {
+        console.log('\n\nYou have a balance of $' + balance);
+        const numberOfLines = getNumberOfLines();
+        const bet = getBet(balance, numberOfLines);
+        balance -= (bet * numberOfLines)
+        const reels = spin();
+        const rows = transpose(reels);
+        printSlotMachine(rows);
+        const winnings = getWinnings(rows, bet, numberOfLines);
+        balance += winnings;
+        console.log('\nYou won, $' + winnings.toString());
+
+        if (balance <= 0) {
+            console.log('\nYou ran out of money!');
+            break;
+        }
+
+        const playAgain = prompt('\nDo you want to play again? (y/n) ');
+
+        if (playAgain != 'y') break;
+    }
+}
+
+game();
