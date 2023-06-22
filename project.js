@@ -74,7 +74,38 @@ const spin = () => {
     return reels;
 }
 
-let balance = deposit();
-const numberOfLines = getNumberOfLines();
-const betAmount = getBet(balance, numberOfLines);
-console.log(spin());
+const transpose = (reels) => {
+    const rows = [];
+
+    for (let i = 0; i < ROWS; i++) {
+        rows.push([]);
+        for (let j = 0; j < COLS; j++) {
+            rows[i].push(reels[j][i]);
+        }
+    }
+
+    return rows;
+}
+
+const printSlotMachine = (rows) => {
+    for (const row of rows) {
+        let rowString = '';
+        for (const [i, symbol] of row.entries()) {
+            rowString += symbol
+            if (i != rows.length - 1) {
+                rowString += ' | ';
+            }
+        }
+        console.log(rowString);
+    }
+}
+
+// let balance = deposit();
+// const numberOfLines = getNumberOfLines();
+// const betAmount = getBet(balance, numberOfLines);
+reels = spin();
+rows = transpose(reels);
+// console.log(reels);
+// console.log(rows);
+
+printSlotMachine(rows);
