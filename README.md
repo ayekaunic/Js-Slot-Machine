@@ -1,4 +1,4 @@
-# Slot Machine Game
+# Khel-e-Kismat
 This is a simple command-line slot machine game implemented in JavaScript.
 
 ## Description
